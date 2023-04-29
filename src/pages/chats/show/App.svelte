@@ -8,6 +8,7 @@ import LibNotify from '../../../lib/LibNotify';
 import LibCookie from '../../../lib/LibCookie';
 import ChatPost from '../ChatPost';
 import ModalPost from './ModalPost.svelte';
+//
 const postCfg= LibChatPost.get_params()
 const chatParams = {
   INIT_TIME : new Date(),
@@ -18,10 +19,76 @@ const chatParams = {
 
 export let id: number = 0;
 let data: any, chat_posts: any[] = [], DATA = chatParams,
-post_id = 0, modal_display = false, mTimeoutId: any = 0, user:any = {}, lastCreateTime: string = "";
-
-//let item = {};
+post_id = 0, modal_display = false, mTimeoutId: any = 0, user: any = {}, lastCreateTime: string = "";
 console.log("show/App.svelte.id=", id);
+
+/**
+* timer_func
+* @param
+*
+* @return
+*/  
+const timer_func = async function(){
+  const sec = LibChatPost.get_remain_time(DATA.INIT_TIME, new Date() )
+  const valid = LibChatPost.valid_update(sec, DATA.STAT)
+  DATA.REMAIN_TIME = LibChatPost.get_next_time(sec)
+  const timeoutId = LibTimer.getTimeoutId();
+//console.log("timeoutId=", timeoutId);
+  if(valid){
+    DATA.INIT_TIME = new Date()
+console.log("uid=", user.id);
+    proc_update(Number(id), user.id)
+  }
+  timeout_next();
+  if(typeof window !== 'undefined' ){
+    console.log(DATA.STAT, sec, valid);
+  }
+};
+/**
+* timeout_next
+* @param
+*
+* @return
+*/
+function timeout_next(){
+  mTimeoutId = setTimeout(timer_func, 5000 );
+  LibTimer.setTimeoutId(mTimeoutId);
+}
+/**
+* proc_update
+* @param
+*
+* @return
+*/
+const proc_update = async function (chatId: number, userId: number)
+{
+    try{
+        const post: any = await ChatPost.getLastTime(chatId, userId);
+//console.log(post);
+console.log("lastCreateTime=", lastCreateTime);
+        let items = [];
+        if(lastCreateTime !== post.createdAt) {
+            //update
+            items = await ChatPost.getList(chatId);
+//console.log(items);
+            lastCreateTime = post.createdAt;
+            chat_posts = items;
+            //beep
+            if(items !== null && items.length > 0) {
+                const item: any = items[0];
+//console.log(item.body, item.UserName, item.createdAt);
+                sendNotify(item.UserName, item.body);
+                setTimeout(async () => {
+                    console.log("#sound start");
+                    await beepStart();
+                }, 1000);                
+            }
+        }
+    } catch (e) {
+        console.error(e);
+        throw new Error('Error , proc_update');
+    }
+}
 /**
 * init proc
 * @param
@@ -31,12 +98,34 @@ console.log("show/App.svelte.id=", id);
 const startProc= async function() {
     const items = await ChatPost.getList(id);
     chat_posts = items;
-//console.log(items);
+    const userObj: any = await LibAuth.getUser();
+console.log(userObj);
+    user = userObj;
 }
 startProc();
 LibNotify.validNotification();
+const timeoutId = LibTimer.getTimeoutId();
+if(timeoutId !== null) {
+  LibTimer.clearTimer(timeoutId);
+}
+timeout_next();
+/**
+ * sendNotify: 通知APIの起動
+ * @param body : string
+ *
+ * @return
+ */  
+ const sendNotify = async function (name: string, body: string) {
+    try{
+        LibNotify.displayNotification(name, body);
+    } catch (e) {
+        console.error(e);
+        throw new Error('Error , sendNotify');
+    }    
+}
 //
-const deleteItem = async function() {
+const beepStart = function () {
+    LibNotify.beep({ time: .3 });
 }
 /**
 * addItem
@@ -86,9 +175,11 @@ console.log(result);
  *
  * @return
  */
- const parentGetList = async function (id: number) {
+ const parentGetList = async function (chat_id: number) {
     try {
-        const items = await ChatPost.getList(Number(data.id));
+//console.log("parentGetList=", chat_id);
+        const items = await ChatPost.getList(Number(id));
+//console.log(items);
         chat_posts = items;
     } catch (e) {
         console.error(e);

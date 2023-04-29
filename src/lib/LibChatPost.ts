@@ -174,7 +174,7 @@ console.log(chatParams.STAT, sec, valid , chatParams.REMAIN_TIME );
         id: id,
       }
 //console.log(item)      
-      const res = await fetch(LibConfig.API_URL + '/chat_posts/delete', {
+      const res = await fetch(import.meta.env.PUBLIC_API_URL + '/chat_posts/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',},
         body: JSON.stringify(item),

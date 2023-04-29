@@ -41,9 +41,6 @@ const ChatPost = {
       elemBody.value = "";
       const resJson = await res.json();
   console.log(resJson.data)
-//        const items = await ChatPost.getList(data.id);
-//        chat_posts = items;
-//        lastCreateTime = resJson.data.createdAt;
       ret = resJson.data;
       return ret;
     } catch (error) {
@@ -73,8 +70,8 @@ const ChatPost = {
         });
         const json = await res.json()  
         items = json.data
+//console.log(items);	      
         await LibDbSession.set(LibConfig.SESSION_KEY_CHAT_POST, items);
-//    console.log(json)	      
       return items;
     } catch (e) {
       console.error(e);
@@ -94,16 +91,16 @@ const ChatPost = {
         chatId: chatId,
         userId: userId,
       }
-       const res = await fetch(LibConfig.API_URL + '/chat_posts/get_last_time', {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json',},
-         body: JSON.stringify(item),
-       });
-       if (res.status != 200) {
-         throw new Error(await res.text());
-       }
-       const json = await res.json();
-       if(json.ret === LibConfig.OK_CODE) {
+      const res = await fetch(import.meta.env.PUBLIC_API_URL + '/chat_posts/get_last_time', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json',},
+        body: JSON.stringify(item),
+      });
+      if (res.status != 200) {
+        throw new Error(await res.text());
+      }
+      const json = await res.json();
+      if(json.ret === LibConfig.OK_CODE) {
 //console.log(json.data);
         ret = json.data;
       }

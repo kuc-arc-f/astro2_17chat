@@ -98,7 +98,7 @@ const childDeleteItem = async function () : Promise<void>
   try {
     ////console.log("user.id=", userId);
 console.log(post_id);
-console.log("postUserId=", postUserId);
+//console.log("postUserId=", postUserId);
     await LibChatPost.delete(post_id);
     //close
     const btn = document.getElementById("modal_close_button");
