@@ -12,5 +12,6 @@ const LibConfig = {
   //cookie
   COOKIE_KEY_AUTH: "key_astro_user_auth",  
   COOKIE_KEY_SESSION: "astro_session",  
+  COOKIE_KEY_LAST_CHAT: "astro_last_chat",  
 }
 export default LibConfig;

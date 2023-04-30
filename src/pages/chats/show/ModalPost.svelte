@@ -5,7 +5,7 @@
 
 <script lang="ts">
 import LibDbSession from '../../../lib/LibDbSession';
-import PostCommon from '../PostCommon';
+//import PostCommon from '../PostCommon';
 import LibAuth from '../../../lib/LibAuth';
 import LibChatPost from '../../../lib/LibChatPost';
 import LibConfig from '../../../lib/LibConfig';
@@ -16,7 +16,7 @@ export let userId: number = 0, post_id: number, post_body: string = "",
 postUserName: string = "", dateStr: string = "", postUserId: number,
 chatId: number = 0, threadItems:any[] = [],
 parentGetList: any;
-//, postItem: any
+//
 console.log("#ModalPost.post");
 console.log("post_id=", post_id);
 /**
@@ -28,10 +28,8 @@ console.log("post_id=", post_id);
 const loadProc = async function () {
   try {
 console.log("#loadProc.id=", post_id);
-//userId
     const user: any = await LibAuth.getUser();
     userId = user.id;
-//console.log("user.id=", userId);
     const posts = await LibDbSession.get(LibConfig.SESSION_KEY_CHAT_POST);
     let result = posts.filter(post => post.id === post_id);
     if(result.length > 0) {
@@ -39,11 +37,11 @@ console.log("#loadProc.id=", post_id);
       post_body = item.body;
       postUserName = item.UserName;
       postUserId = item.UserId;
-console.log("postUserId=", postUserId);
+//console.log("postUserId=", postUserId);
       chatId = item.chatId;
       dateStr = LibCommon.converDatetimeString(item.createdAt);
       //Thread
-//      await getThread();
+      await getThread();
     }
   } catch (e) {
     console.error(e);
@@ -98,7 +96,6 @@ const childDeleteItem = async function () : Promise<void>
   try {
     ////console.log("user.id=", userId);
 console.log(post_id);
-//console.log("postUserId=", postUserId);
     await LibChatPost.delete(post_id);
     //close
     const btn = document.getElementById("modal_close_button");
@@ -129,7 +126,6 @@ console.log(post_id);
         <hr />
         ID: {post_id}
         <!-- replay_box -->
-        <!--
         <hr class="my-1" />
         <div class="row">
           <div class="col-sm-9"><textarea class="form-control" id="modal_reply_body" rows={3} />
@@ -139,7 +135,6 @@ console.log(post_id);
               Reply</button>
           </div>
         </div>  
-        -->
         <!-- thread --> 
         {#each threadItems as item}
         <div>

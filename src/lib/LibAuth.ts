@@ -13,7 +13,7 @@ const LibAuth = {
     try {
       let ret = false;
       const user = await LibDbSession.get(LibConfig.SESSION_KEY_USER);
-console.log(user);
+//console.log(user);
       if(user === null) {
         return ret;
       }

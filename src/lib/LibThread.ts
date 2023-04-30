@@ -1,5 +1,4 @@
-import moment from 'moment'
-//import { exit } from 'process';
+//import moment from 'moment'
 import LibConfig from './LibConfig'
 
 //
@@ -16,7 +15,7 @@ const LibThread = {
       const item = {
         chatPostId: chatPostId,
       }      
-      const url = LibConfig.API_URL + "/thread/index";
+      const url = import.meta.env.PUBLIC_API_URL + "/thread/index";
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',},
@@ -51,7 +50,7 @@ const LibThread = {
         chatId: chatId,
         chatPostId: chatPostId,
       }
-      const url = LibConfig.API_URL + "/thread/create";
+      const url = import.meta.env.PUBLIC_API_URL + "/thread/create";
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',},
@@ -79,7 +78,7 @@ const LibThread = {
       const item = {
         id: threadId,
       }
-      const url = LibConfig.API_URL + "/thread/delete";
+      const url = import.meta.env.PUBLIC_API_URL + "/thread/delete";
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',},
@@ -104,7 +103,7 @@ const LibThread = {
    getItem : async function (id: number): Promise<any>
    {
     try{
-      const url = LibConfig.API_URL + "/thread/show/" + id.toString();
+      const url = import.meta.env.PUBLIC_API_URL + "/thread/show/" + id.toString();
       const res = await fetch(url, {
         method: 'GET',
       });

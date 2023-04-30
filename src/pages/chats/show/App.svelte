@@ -103,6 +103,11 @@ console.log(userObj);
     user = userObj;
 }
 startProc();
+if(typeof window !== 'undefined' ) {
+    const key = LibConfig.COOKIE_KEY_LAST_CHAT;
+console.log("#init proc", key);
+    LibCookie.set_cookie(key, String(id));
+}
 LibNotify.validNotification();
 const timeoutId = LibTimer.getTimeoutId();
 if(timeoutId !== null) {
